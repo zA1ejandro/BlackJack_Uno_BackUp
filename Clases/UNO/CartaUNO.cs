@@ -33,8 +33,5 @@ class CartaUNO:Carta,IJugable
         return true;
     }
 
-    protected CartaUNO(Colores color,int valorCarta) : base(color)
-    {
-        Valor = valorCarta;
-    }
+    protected CartaUNO(Colores color, int valorCarta) : base(valorCarta, color){}
 }
