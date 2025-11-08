@@ -14,8 +14,9 @@ abstract class Carta
     protected Colores _color;
     public abstract Colores Color { get; set; }
 
-    protected Carta(Colores colorCarta)
+    protected Carta(int ValorCrta,Colores colorCarta)
     {
+        Valor = ValorCrta;
         Color = colorCarta;
     }
 }
