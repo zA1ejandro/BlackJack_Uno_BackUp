@@ -41,7 +41,7 @@ class CartaBJ:Carta
         get { return _figura; }
         set{ _figura = value; }
     }
-    protected CartaBJ(int valorCarta,Colores colorCarta,Figuras figuraCarta) : base(valorCarta, colorCarta)
+    public CartaBJ(int valorCarta,Colores colorCarta,Figuras figuraCarta) : base(valorCarta, colorCarta)
     {
         Figura = figuraCarta;
     }
