@@ -21,11 +21,10 @@ class ManoUNO:Mano, IMano
     {
         if (!ManoCartas.Contains(carta))
         {
-         throw new Exception("La carta no se encuentra en la mano");
+            throw new Exception("La carta no se encuentra en la mano");
         }
         
         ManoCartas.Remove(carta);
         return carta;
     }
-   
 }

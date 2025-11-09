@@ -25,5 +25,4 @@ class ManoBJ:Mano, IMano
         ManoCartas.Remove(carta);
         return carta;
     }
-   
 }
