@@ -6,11 +6,14 @@ abstract class Jugador
 {
     protected string _nombreJugador;
     public abstract string NombreJugador { get; set; }
-    
+
+    protected int _puntos;
+    public abstract int Puntos{ get; set; }
     protected Mano ManoJugador { get;}
     
     public Jugador(string Nombre)
     {
         NombreJugador = Nombre;
+        Puntos = 0;
     }
 }
