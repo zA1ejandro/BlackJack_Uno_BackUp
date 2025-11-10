@@ -42,9 +42,8 @@ abstract class Juego
     protected Baraja _barajaJuego{ get; set; }
     protected Baraja _barajaDescartasdas{ get; set;}
     
-    public Juego(int rondas)
+    public Juego()
     {
-        NumeroRondas = rondas;
         NumeroRondasJugadas = 0;
     }
 }
