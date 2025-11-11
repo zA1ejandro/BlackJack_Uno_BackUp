@@ -9,7 +9,8 @@ abstract class Jugador
 
     protected int _puntos;
     public abstract int Puntos{ get; set; }
-    protected Mano ManoJugador { get;}
+    protected Mano _manoJugador;
+    public Mano ManoJugador{ get; set; }
     
     public Jugador(string Nombre)
     {
