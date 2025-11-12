@@ -35,3 +35,30 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
             }
             throw new Exception("La mano del jugador no implementa IMano");
         }
+        public void Barajear(Baraja baraja)
+        {
+            var cartas = baraja.BarajaCartas;
+            for (int i = cartas.Count - 1; i > 0; i--)
+            {
+                int newPosicion = _random.Next(i + 1);
+                var temp = cartas[i];
+                cartas[i] = cartas[newPosicion];
+                cartas[newPosicion] = temp;
+            }
+        }
+
+        public void RepartirCartas(List<Jugador> jugadores, Baraja baraja)
+        {
+            foreach (var jugador in jugadores)
+            {
+                jugador.RecibirCarta(baraja.Repartir());
+                jugador.RecibirCarta(baraja.Repartir());
+            }
+        }
+
+        public void RepartirCarta(List<Jugador> jugadores, Baraja barajaRepartir, int numeroCartas)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
