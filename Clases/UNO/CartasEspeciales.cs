@@ -10,5 +10,13 @@ class CartaReversa : CartaEspecialUNO
     {
         juego.Sentido = !juego.Sentido;
     }
-}
+}   
 
+class CartaNoJuegas:CartaEspecialUNO
+{
+    public CartaNoJuegas(Colores color, int valor) : base(color, valor) { }
+    public override void EfectoCarta(JuegoUNO juego)
+    {
+        juego.SaltoTurno = true;
+    }
+}
