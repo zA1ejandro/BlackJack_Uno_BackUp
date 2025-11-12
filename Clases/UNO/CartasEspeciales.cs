@@ -4,7 +4,7 @@ namespace BlackJack_Uno_BackUp.Clases.UNO;
 
 class CartaReversa : CartaEspecialUNO
 {
-    public CartaReversa(Colores color, int valor) : base(color, 10) { }
+    public CartaReversa(Colores color) : base(color, 10) { }
 
     public override void EfectoCarta(JuegoUNO juego)
     {
@@ -14,7 +14,7 @@ class CartaReversa : CartaEspecialUNO
 
 class CartaNoJuegas : CartaEspecialUNO
 {
-    public CartaNoJuegas(Colores color, int valor) : base(color, 11) { }
+    public CartaNoJuegas(Colores color) : base(color, 11) { }
     public override void EfectoCarta(JuegoUNO juego)
     {
         juego.SaltoTurno = true;
@@ -23,7 +23,7 @@ class CartaNoJuegas : CartaEspecialUNO
 
 class CartaComeDos : CartaEspecialUNO
 {
-    public CartaComeDos(Colores color, int valor) : base(color, 12) { }
+    public CartaComeDos(Colores color) : base(color, 12) { }
     public override void EfectoCarta(JuegoUNO juego)
     {
         juego.CartasRobar = juego.CartasRobar + 2;
@@ -32,7 +32,7 @@ class CartaComeDos : CartaEspecialUNO
 
 class CartaComodin : CartaEspecialUNO
 {
-    public CartaComodin(Colores color, int valor) : base(color, 13) { }
+    public CartaComodin(Colores color) : base(color, 13) { }
     public override void EfectoCarta(JuegoUNO juego)
     {
         Random random = new Random();
@@ -46,7 +46,7 @@ class CartaComodin : CartaEspecialUNO
 
 class CartaCome4 : CartaEspecialUNO
 {
-    public CartaCome4(Colores color, int valor) : base(color, 14) { }
+    public CartaCome4(Colores color ) : base(color,14) { }
     public override void EfectoCarta(JuegoUNO juego)
     {
         Random random = new Random();
