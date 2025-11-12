@@ -20,6 +20,8 @@ namespace BlackJack_Uno_BackUp.Clases
 
         public JugadorCauteloso(string Nombre) : base(Nombre)
         {
+            _puntoDeCorte = 17;
+            ManoJugador = new ManoBJ();
         }
 
 

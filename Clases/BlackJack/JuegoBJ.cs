@@ -10,37 +10,40 @@ class JuegoBJ : Juego, IJuego
     public Juego InicializarJuego()
     {
         Console.WriteLine("¿Cuantas rondas desea jugar?");
-        try
-        {
-            string rondas = Console.ReadLine();
-            NumeroRondas = int.Parse(rondas);
-        }
-        catch (Exception)
+        string? rondas = Console.ReadLine();
+        if (!int.TryParse(rondas, out int numRondas) || numRondas <= 0)
         {
             Console.WriteLine("Entrada no valida, se asignara 1 ronda por defecto.");
             NumeroRondas = 1;
         }
-        Console.WriteLine("¿Cuantos jugadores (adicionales al dealer) participaran?");
-        int numJugadores;
-        try
+        else
         {
-            string input = Console.ReadLine();
-            numJugadores = int.Parse(input);
+            NumeroRondas = numRondas;
         }
-        catch (Exception)
+
+        Console.WriteLine("¿Cuantos jugadores (adicionales al dealer) participaran?");
+        string? input = Console.ReadLine();
+        int numJugadores;
+        if (!int.TryParse(input, out numJugadores) || numJugadores <= 0)
         {
             Console.WriteLine("Entrada no valida, se asignara 1 jugador por defecto.");
             numJugadores = 1;
         }
 
-
         for (int i = 0; i < numJugadores; i++)
         {
             Console.WriteLine($"Nombre del jugador {i + 1}:");
-            string nombre = Console.ReadLine();
+            string? nombre = Console.ReadLine();
+            
+            // Validar que el nombre no sea null o vacío
+            if (string.IsNullOrWhiteSpace(nombre))
+            {
+                nombre = $"Jugador{i + 1}";
+                Console.WriteLine($"Nombre no valido, se asignara '{nombre}'");
+            }
 
             Console.WriteLine($"Que tipo de jugador es {nombre}? (1: Cauteloso, 2: Temerario)");
-            string tipo = Console.ReadLine();
+            string? tipo = Console.ReadLine();
             
             IJugadorBJ nuevoJugador;
             switch (tipo)
@@ -94,31 +97,69 @@ class JuegoBJ : Juego, IJuego
 
     public void TurnoJugador(IJugadorBJ jugador)
     {
+        Console.WriteLine();
+        Console.WriteLine($"Cartas iniciales {((Jugador)jugador).NombreJugador}:");
+        var mano = ((Jugador)jugador).ManoJugador.ManoCartas;
+        for (int i = 0; i < mano.Count; i++)
+        {
+            Console.WriteLine($"  Carta {i + 1}: Valor {mano[i].Valor}");
+        }
+        
+        Console.WriteLine($"Puntos iniciales: {jugador.CalcularPuntos()}");
+
         while (jugador.TomarDecision())
         {
             Console.WriteLine($"{((Jugador)jugador).NombreJugador} pide una carta.");
             Carta carta = _barajaJuego.BarajaCartas[0];
             _barajaJuego.BarajaCartas.RemoveAt(0);
             jugador.RecibirCarta(carta);
-            
+
             int puntos = jugador.CalcularPuntos();
             Console.WriteLine($"Puntos de {((Jugador)jugador).NombreJugador}: {puntos}");
             if (puntos > 21)
             {
                 Console.WriteLine($"{((Jugador)jugador).NombreJugador} se ha pasado de 21.");
+                Console.WriteLine();
                 break;
             }
+        }
+        if (jugador.CalcularPuntos() <= 21)
+        {
+            Console.WriteLine($"{((Jugador)jugador).NombreJugador} se planta con {jugador.CalcularPuntos()} puntos.");
+            Console.WriteLine();
         }
     }
 
     private void TurnoDealer()
     {
+        Console.WriteLine("Cartas iniciales Dealer:");
+        var mano = ((Jugador)dealer).ManoJugador.ManoCartas;
+        for (int i = 0; i < mano.Count; i++)
+        {
+            Console.WriteLine($"  Carta {i + 1}: Valor {mano[i].Valor}");
+        }
+        
+        Console.WriteLine($"Puntos iniciales: {dealer.CalcularPuntos()}");
         while (dealer.TomarDecision())
         {
             Console.WriteLine("El dealer pide una carta.");
             Carta carta = _barajaJuego.BarajaCartas[0];
             _barajaJuego.BarajaCartas.RemoveAt(0);
             dealer.RecibirCarta(carta);
+            int puntos = dealer.CalcularPuntos();
+            Console.WriteLine($"Puntos del dealer: {puntos}");
+
+            if (puntos > 21)
+            {
+                Console.WriteLine("El dealer se ha pasado de 21.");
+                Console.WriteLine();
+                break;
+            }
+        }
+        if (dealer.CalcularPuntos() <= 21)
+        {
+            Console.WriteLine($"El dealer se planta con {dealer.CalcularPuntos()} puntos.");
+            Console.WriteLine();
         }
     }
 
