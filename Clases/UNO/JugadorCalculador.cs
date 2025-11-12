@@ -110,4 +110,9 @@ class JugadorCalculador : Jugador, IDealer, IJugadorUNO
 
         return null;
     }
+
+    public void RecibirCartas(List<Jugador> jugadores)
+    {
+        throw new NotImplementedException();
+    }
 }
