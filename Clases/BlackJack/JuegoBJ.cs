@@ -60,6 +60,7 @@ class JuegoBJ : Juego, IJuego
         }
 
         _barajaJuego = new BarajaBJ();
+        return this;
     }
 
     public JugadorDealer dealer;
@@ -88,7 +89,7 @@ class JuegoBJ : Juego, IJuego
     public void RepartirCartas() // checar
     {
         dealer.Barajear(_barajaJuego);
-        dealer.RepartirCarta(Jugadores, _barajaJuego);
+        dealer.RepartirCarta(Jugadores, _barajaJuego, 2);
     }
 
     public void TurnoJugador(IJugadorBJ jugador)
