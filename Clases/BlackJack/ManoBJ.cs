@@ -25,4 +25,11 @@ class ManoBJ:Mano, IMano
         ManoCartas.Remove(carta);
         return carta;
     }
+
+    public List<Carta> VaciarMano()
+    {
+        List<Carta> cartasADevolver = new List<Carta>(ManoCartas);
+        ManoCartas.Clear();
+        return cartasADevolver;
+    }
 }

@@ -39,6 +39,13 @@ class BarajaBJ:Baraja,ICrearBaraja
             {
                 BarajaCreada.Add(new CartaBJ(i, ColoresPosibles[alternarColor], palo));
             }
+            
+            BarajaCreada.Add(new CartasEspecialessBJ(10,ColoresPosibles[alternarColor], palo));
+            BarajaCreada.Add(new CartasEspecialessBJ(10, ColoresPosibles[alternarColor], palo));
+            BarajaCreada.Add(new CartasEspecialessBJ(10, ColoresPosibles[alternarColor], palo));
+            BarajaCreada.Add(new CartasEspecialessBJ(11, ColoresPosibles[alternarColor], palo));
+
+            
             alternarColor++;
             if (alternarColor > 1)
             {
@@ -46,6 +53,16 @@ class BarajaBJ:Baraja,ICrearBaraja
             }
         }
         return BarajaCreada;
+    }
+    public Carta SacarCarta()
+    {
+        if (BarajaCartas.Count == 0)
+        {
+            throw new Exception("No hay mas cartas en la baraja");
+        }
+        Carta carta = BarajaCartas[0];
+        BarajaCartas.RemoveAt(0);
+        return carta;
     }
     
     public BarajaBJ()
