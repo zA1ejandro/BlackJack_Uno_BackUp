@@ -17,7 +17,7 @@ class JuegoBJ : Juego, IJuego
         Console.WriteLine("¿Cuantas rondas desea jugar?");
         string rondas = Console.ReadLine();
         int rondasInt = int.Parse(rondas);
-        int Rondas = rondasInt;
+        juego.Rondas = rondasInt;
 
         return juegoCreado;
 
@@ -26,7 +26,6 @@ class JuegoBJ : Juego, IJuego
 
     public JuegoBJ() : base()
     {
-        
 
     }
 
