@@ -8,10 +8,11 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
 
     class JugadorDealer : Jugador, IJugadorBJ, IDealer
     {
-        private readonly Random _random = new Random();
+        private Random _random = new Random();
+        private  BarajaDescarteBJ _barajaDescarte = new BarajaDescarteBJ();
 
-        public override string NombreJugador { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override int Puntos { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override string NombreJugador { get => _nombreJugador; set => _nombreJugador = value; }
+        public override int Puntos { get => _puntos; set => _puntos = value; }
 
 
         public JugadorDealer() : base("Dealer")
@@ -26,7 +27,7 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
             return puntosActuales < 17;
         }
 
-        public  void RecibirCarta(Carta carta)
+        public void RecibirCarta(Carta carta)
         {
             if (ManoJugador is IMano mano)
             {
@@ -35,6 +36,28 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
             }
             throw new Exception("La mano del jugador no implementa IMano");
         }
+
+        public int CalcularPuntos()
+        {
+            int suma = 0;
+            int ases = 0;
+            foreach (var carta in ManoJugador.ManoCartas)
+            {
+                suma += carta.Valor;
+                if (carta is CartasEspecialessBJ cartaEspecial && cartaEspecial.Figura == CartasEspecialessBJ.TipoFigura.As)
+                {
+                    ases++;
+                }
+            }
+
+            while (suma > 21 && ases > 0)
+            {
+                suma -= 10;
+                ases--;
+            }
+            return suma;
+        }
+
         public void Barajear(Baraja baraja)
         {
             var cartas = baraja.BarajaCartas;
@@ -47,18 +70,18 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
             }
         }
 
-        public void RepartirCartas(List<Jugador> jugadores, Baraja baraja)
-        {
-            foreach (var jugador in jugadores)
-            {
-                jugador.RecibirCarta(baraja.Repartir());
-                jugador.RecibirCarta(baraja.Repartir());
-            }
-        }
-
         public void RepartirCarta(List<Jugador> jugadores, Baraja barajaRepartir, int numeroCartas)
         {
             throw new NotImplementedException();
+        }
+
+        public void RecibirCartas(List<Jugador> jugadores)
+        {
+            foreach (var jugador in jugadores)
+            {
+                _barajaDescarte.BarajaCartas.AddRange(jugador.ManoJugador.ManoCartas);
+                jugador.ManoJugador.ManoCartas.Clear();
+            }
         }
     }
 }

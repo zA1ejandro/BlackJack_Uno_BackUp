@@ -7,30 +7,25 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack;
 
 class JuegoBJ : Juego, IJuego
 {
-    public JugadorDealer Dealear { get; set; } // puede 
-
     public Juego InicializarJuego()
     {
-        var juego = new JuegoBJ();
-        juego.Dealear = new JugadorDealer();
-        juego.Jugadores.Add(juego.Dealear);
-
         Console.WriteLine("¿Cuantas rondas desea jugar?");
         try
         {
             string rondas = Console.ReadLine();
-            juego.NumeroRondas = int.Parse(rondas);
+            NumeroRondas = int.Parse(rondas);
         }
         catch (Exception)
         {
             Console.WriteLine("Entrada no valida, se asignara 1 ronda por defecto.");
-            juego.NumeroRondas = 1;
+            NumeroRondas = 1;
         }
         Console.WriteLine("¿Cuantos jugadores (adicionales al dealer) participaran?");
+        int numJugadores;
         try
         {
             string input = Console.ReadLine();
-            int numJugadores = int.Parse(input);
+            numJugadores = int.Parse(input);
         }
         catch (Exception)
         {
@@ -61,15 +56,13 @@ class JuegoBJ : Juego, IJuego
                     nuevoJugador = new JugadorCauteloso(nombre);
                     break;
             }
-            juego.Jugadores.Add((Jugador)nuevoJugador);
+            Jugadores.Add((Jugador)nuevoJugador);
         }
 
-        juego._barajaJuego = new BarajaBJ();
-        return juego;
+        _barajaJuego = new BarajaBJ();
     }
 
     public JugadorDealer dealer;
-    private int numJugadores;
 
     public void Jugar()
     {
@@ -95,7 +88,7 @@ class JuegoBJ : Juego, IJuego
     public void RepartirCartas() // checar
     {
         dealer.Barajear(_barajaJuego);
-        dealer.RepartirCartas(Jugadores, _barajaJuego);
+        dealer.RepartirCarta(Jugadores, _barajaJuego);
     }
 
     public void TurnoJugador(IJugadorBJ jugador)
