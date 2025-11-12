@@ -16,10 +16,6 @@ class CartaUNO:Carta,IJugable
         get { return _valor; }
         set
         {
-            if (value < 0 || value > 9)
-            {
-                throw new Exception("Una carta normal no puede valer mas de 9 ni menos de 0");
-            }
             _valor = value;
         }
     }
