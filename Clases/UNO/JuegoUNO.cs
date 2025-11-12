@@ -83,7 +83,7 @@ class JuegoUNO:Juego, IJuego
                     Carta cartaElegida = jugadorUNO.TomarDecision(cartaEnJuego);
                     
                     bool jugoCarta = false;
-                    Carta cartaJugada = null;
+                    Carta? cartaJugada = null;
 
                     if (cartaElegida != null)
                     {
@@ -250,7 +250,7 @@ class JuegoUNO:Juego, IJuego
         int inputRondas = 0;
         var JuegoCreado = new JuegoUNO();
         Console.WriteLine("¿Cuantas rondas quieres jugar?");
-        string input = Console.ReadLine();
+        string? input = Console.ReadLine();
         while (!inputValido)
         {
             if (int.TryParse(input, out inputRondas))
