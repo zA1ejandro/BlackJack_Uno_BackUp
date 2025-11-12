@@ -3,8 +3,11 @@ using BlackJack_Uno_BackUp.Interfaces;
 
 namespace BlackJack_Uno_BackUp.Clases.UNO;
 
-class JuegoUNO:Juego,IJuego
+class JuegoUNO:Juego, IJuego
 {
+    public bool Sentido { get; set; }
+    public int CartasRobar { get; set; }
+    public bool SaltoTurno{ get; set; }
     public void Jugar()
     {
         _barajaJuego = new BarajaUNO();
