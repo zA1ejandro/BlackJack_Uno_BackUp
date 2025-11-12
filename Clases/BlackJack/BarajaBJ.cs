@@ -54,7 +54,7 @@ class BarajaBJ:Baraja,ICrearBaraja
         }
         return BarajaCreada;
     }
-    public Carta SacarCarta()
+    public Carta Repartir ()
     {
         if (BarajaCartas.Count == 0)
         {
@@ -64,7 +64,9 @@ class BarajaBJ:Baraja,ICrearBaraja
         BarajaCartas.RemoveAt(0);
         return carta;
     }
+
     
+
     public BarajaBJ()
     {
         BarajaCartas = CrearBaraja();

@@ -44,7 +44,7 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
             foreach (var carta in ManoJugador.ManoCartas)
             {
                 suma += carta.Valor;
-                if (carta is CartasEspecialessBJ cartaEspecial && cartaEspecial.Figura == CartasEspecialessBJ.TipoFigura.As)
+                if (carta is CartasEspecialessBJ cartaEspecial && cartaEspecial.FiguraSuit == CartasEspecialessBJ.TipoFigura.As)
                 {
                     ases++;
                 }
@@ -72,9 +72,22 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
 
         public void RepartirCarta(List<Jugador> jugadores, Baraja barajaRepartir, int numeroCartas)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < numeroCartas; i++)
+            {
+                foreach (var jugador in jugadores)
+                {
+                    if (!(barajaRepartir is BarajaBJ barajaBJ))
+                    {
+                        throw new Exception("La baraja de repartir no es de BlackJack");
+                    }
+                    Carta cartaRepartida = barajaBJ.Repartir();
+                    if (jugador.ManoJugador is IMano mano)
+                    {
+                        mano.AgregarCarta(cartaRepartida);
+                    }
+                }
+            }
         }
-
         public void RecibirCartas(List<Jugador> jugadores)
         {
             foreach (var jugador in jugadores)
