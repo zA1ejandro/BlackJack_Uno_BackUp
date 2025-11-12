@@ -7,27 +7,241 @@ class JuegoUNO:Juego, IJuego
 {
     public bool Sentido { get; set; }
     public int CartasRobar { get; set; }
-    public bool SaltoTurno{ get; set; }
+    public bool SaltoTurno { get; set; }
+    
     public void Jugar()
     {
         _barajaJuego = new BarajaUNO();
         _barajaDescartasdas = new BarajaDescarteUNO();
 
         Random random = new Random();
-        int dealer = random.Next(0, Jugadores.Count);
-        Jugadores[dealer].Barajear(_barajaJuego);
-        Jugadores[dealer].RepartirCarta(Jugadores, _barajaJuego, 4);
-        var cartaInicial = Jugadores[dealer].AgarrarCarta(_barajaJuego);
-        _barajaDescartasdas.BarajaCartas.Add(cartaInicial);
+        int indiceDealer = random.Next(Jugadores.Count);
+        IDealer dealerActual = (IDealer)Jugadores[indiceDealer];
 
-        Console.WriteLine("Empieza el juego");
+        Console.WriteLine($"El jugador: {Jugadores[indiceDealer].NombreJugador} reparte");
+        dealerActual.Barajear(_barajaJuego);
+        dealerActual.RepartirCarta(Jugadores, _barajaJuego, 4);
+
+        Carta primeraCartaDescarte = ((IJugadorUNO)dealerActual).AgarraCarta(_barajaJuego);
+        _barajaDescartasdas.BarajaCartas.Add(primeraCartaDescarte);
+
+        Console.WriteLine("=== EMPIEZA EL JUEGO ===");
+
+        bool sentidoInvertido = false;
+        int cartasARobar = 0;
+        bool saltarSiguiente = false;
+
         while (NumeroRondasJugadas < NumeroRondas)
         {
-            Console.WriteLine($"Ronda {NumeroRondasJugadas}");
+            bool partidaTerminada = false;
             
+            while (!partidaTerminada)
+            {
+                for (int i = 0; i < Jugadores.Count; i++)
+                {
+                    int indice = sentidoInvertido ? (Jugadores.Count - 1 - i) : i;
+                    Jugador jugadorActual = Jugadores[indice];
+                    IJugadorUNO jugadorUNO = (IJugadorUNO)jugadorActual;
+
+                    if (saltarSiguiente)
+                    {
+                        Console.WriteLine($"{jugadorActual.NombreJugador} pierde su turno (Nojuegas)");
+                        Console.WriteLine(); 
+                        saltarSiguiente = false;
+                        continue;
+                    }
+
+                    Console.WriteLine($"Turno de: {jugadorActual.NombreJugador}");
+                    Console.WriteLine();
+                    Console.WriteLine($"Cartas en mano: {jugadorActual.ManoJugador.ManoCartas.Count}");
+
+                    Carta cartaEnJuego = _barajaDescartasdas.BarajaCartas[_barajaDescartasdas.BarajaCartas.Count - 1];
+                    Console.WriteLine($"Carta en juego: {cartaEnJuego.Color} {cartaEnJuego.Valor}");
+
+                    if (cartasARobar > 0)
+                    {
+                        Console.WriteLine($"→ Debe robar {cartasARobar} cartas");
+                        for (int j = 0; j < cartasARobar; j++)
+                        {
+                            if (_barajaJuego.BarajaCartas.Count == 0)
+                            {
+                                Carta ultimaCartaDescarte = _barajaDescartasdas.BarajaCartas[_barajaDescartasdas.BarajaCartas.Count - 1];
+                                _barajaDescartasdas.BarajaCartas.RemoveAt(_barajaDescartasdas.BarajaCartas.Count - 1);
+                                _barajaJuego.BarajaCartas = new List<Carta>(_barajaDescartasdas.BarajaCartas);
+                                _barajaDescartasdas.BarajaCartas.Clear();
+                                _barajaDescartasdas.BarajaCartas.Add(ultimaCartaDescarte);
+                                IDealer dealer = (IDealer)jugadorActual;
+                                dealer.Barajear(_barajaJuego);
+                            }
+                            Carta cartaRobada = jugadorUNO.AgarraCarta(_barajaJuego);
+                            jugadorActual.ManoJugador.ManoCartas.Add(cartaRobada);
+                        }
+                        cartasARobar = 0;
+                        continue;
+                    }
+
+                    Carta cartaElegida = jugadorUNO.TomarDecision(cartaEnJuego);
+                    
+                    bool jugoCarta = false;
+                    Carta cartaJugada = null;
+
+                    if (cartaElegida != null)
+                    {
+                        if (cartaElegida is IJugable)
+                        {
+                            IJugable jugable = (IJugable)cartaElegida;
+                            if (jugable.EsJugable(cartaEnJuego))
+                            {
+                                cartaJugada = cartaElegida;
+                                jugoCarta = true;
+                            }
+                        }
+                    }
+
+                    if (!jugoCarta)
+                    {
+                        foreach (var carta in jugadorActual.ManoJugador.ManoCartas.ToList())
+                        {
+                            if (carta is IJugable)
+                            {
+                                IJugable jugable = (IJugable)carta;
+                                if (jugable.EsJugable(cartaEnJuego))
+                                {
+                                    cartaJugada = carta;
+                                    jugoCarta = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!jugoCarta)
+                    {
+                        Console.WriteLine("→ No tiene cartas válidas, comienza a robar...");
+
+                        while (!jugoCarta)
+                        {
+                            if (_barajaJuego.BarajaCartas.Count == 0)
+                            {
+                                Carta ultimaCartaDescarte = _barajaDescartasdas.BarajaCartas[_barajaDescartasdas.BarajaCartas.Count - 1];
+                                _barajaDescartasdas.BarajaCartas.RemoveAt(_barajaDescartasdas.BarajaCartas.Count - 1);
+                                _barajaJuego.BarajaCartas = new List<Carta>(_barajaDescartasdas.BarajaCartas);
+                                _barajaDescartasdas.BarajaCartas.Clear();
+                                _barajaDescartasdas.BarajaCartas.Add(ultimaCartaDescarte);
+                                IDealer dealer = (IDealer)jugadorActual;
+                                dealer.Barajear(_barajaJuego);
+                            }
+
+                            Carta cartaRobada = jugadorUNO.AgarraCarta(_barajaJuego);
+                            jugadorActual.ManoJugador.ManoCartas.Add(cartaRobada);
+                            Console.WriteLine($"→ Robó: {cartaRobada.Color} {cartaRobada.Valor}");
+
+                            if (cartaRobada is IJugable)
+                            {
+                                IJugable jugable = (IJugable)cartaRobada;
+                                if (jugable.EsJugable(cartaEnJuego))
+                                {
+                                    cartaJugada = cartaRobada;
+                                    jugoCarta = true;
+                                }
+                            }
+                        }
+                    }
+
+                    jugadorActual.ManoJugador.ManoCartas.Remove(cartaJugada);
+                    _barajaDescartasdas.BarajaCartas.Add(cartaJugada);
+                    Console.WriteLine($"→ Jugó: {cartaJugada.Color} {cartaJugada.Valor}");
+                    Console.WriteLine();
+                    if (jugadorActual.ManoJugador.ManoCartas.Count == 1)
+                    {
+                        Console.WriteLine($"→ {jugadorActual.NombreJugador}: ¡UNO!");
+                    }
+
+                    if (cartaJugada is CartaEspecialUNO)
+                    {
+                        CartaEspecialUNO especial = (CartaEspecialUNO)cartaJugada;
+                        if (especial is CartaReversa)
+                        {
+                            sentidoInvertido = !sentidoInvertido;
+                            Console.WriteLine("→ Efecto: REVERSA");
+                            Console.WriteLine();
+                        }
+                        else if (especial is CartaNoJuegas)
+                        {
+                            saltarSiguiente = true;
+                            Console.WriteLine("→ Efecto: SALTO");
+                            Console.WriteLine();
+                        }
+                        else if (especial is CartaComeDos)
+                        {
+                            cartasARobar += 2;
+                            Console.WriteLine("→ Efecto: +2");
+                            Console.WriteLine();
+                        }
+                        else if (especial is CartaCome4)
+                        {
+                            cartasARobar += 4;
+                            especial.EfectoCarta(this);
+                            Console.WriteLine($"→ Efecto: +4 (Nuevo color: {especial.Color})");
+                            Console.WriteLine();
+                        }
+                        else if (especial is CartaComodin)
+                        {
+                            especial.EfectoCarta(this);
+                            Console.WriteLine($"→ Efecto: Comodín (Nuevo color: {especial.Color})");
+                            Console.WriteLine();
+                        }
+                    }
+
+                    if (jugadorActual.ManoJugador.ManoCartas.Count == 0)
+                    {
+                        jugadorActual.Puntos++;
+                        Console.WriteLine($"{jugadorActual.NombreJugador} gano la ronda");
+                        Console.WriteLine();
+
+                        NumeroRondasJugadas++;
+                        partidaTerminada = true;
+
+                        if (NumeroRondasJugadas < NumeroRondas)
+                        {
+                            Console.WriteLine($"RONDA {NumeroRondasJugadas + 1}");
+                            
+                            foreach (var jugador in Jugadores)
+                            {
+                                jugador.ManoJugador.ManoCartas.Clear();
+                            }
+
+                            _barajaJuego = new BarajaUNO();
+                            _barajaDescartasdas = new BarajaDescarteUNO();
+
+                            int nuevoIndiceDealer = random.Next(Jugadores.Count);
+                            IDealer nuevoDealer = (IDealer)Jugadores[nuevoIndiceDealer];
+                            nuevoDealer.Barajear(_barajaJuego);
+                            nuevoDealer.RepartirCarta(Jugadores, _barajaJuego, 7);
+
+                            Carta nuevaCartaDescarte = ((IJugadorUNO)nuevoDealer).AgarraCarta(_barajaJuego);
+                            _barajaDescartasdas.BarajaCartas.Add(nuevaCartaDescarte);
+
+                            sentidoInvertido = false;
+                            cartasARobar = 0;
+                            saltarSiguiente = false;
+                        }
+                        break;
+                    }
+                }
+            }
         }
-
-
+        
+        Console.WriteLine("\n=== JUEGO TERMINADO ===");
+        Jugador ganador = Jugadores[0];
+        for (int i = 1; i < Jugadores.Count; i++)
+        {
+            if (Jugadores[i].Puntos > ganador.Puntos)
+            {
+                ganador = Jugadores[i];
+            }
+        }
+        Console.WriteLine($"GANADOR: {ganador.NombreJugador} con {ganador.Puntos} puntos");
     }
 
     public Juego InicializarJuego()
