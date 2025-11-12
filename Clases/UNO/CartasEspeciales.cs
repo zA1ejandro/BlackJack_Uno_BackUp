@@ -1,4 +1,5 @@
 using System;
+using BlackJack_Uno_BackUp.Interfaces;
 
 namespace BlackJack_Uno_BackUp.Clases.UNO;
 
@@ -14,7 +15,7 @@ class CartaReversa : CartaEspecialUNO
 
 class CartaNoJuegas : CartaEspecialUNO
 {
-    public CartaNoJuegas(Colores color) : base(color, 11) { }
+    public CartaNoJuegas(Colores color) : base(color,11) { }
     public override void EfectoCarta(JuegoUNO juego)
     {
         juego.SaltoTurno = true;
@@ -33,6 +34,10 @@ class CartaComeDos : CartaEspecialUNO
 class CartaComodin : CartaEspecialUNO
 {
     public CartaComodin(Colores color) : base(color, 13) { }
+    public new bool EsJugable(Carta verificar)
+    {
+        return true;
+    }
     public override void EfectoCarta(JuegoUNO juego)
     {
         Random random = new Random();
@@ -46,7 +51,13 @@ class CartaComodin : CartaEspecialUNO
 
 class CartaCome4 : CartaEspecialUNO
 {
-    public CartaCome4(Colores color ) : base(color,14) { }
+    public CartaCome4(Colores color) : base(color, 14) { }
+
+    public new bool EsJugable(Carta verificar)
+    {
+        return true;
+    }
+    
     public override void EfectoCarta(JuegoUNO juego)
     {
         Random random = new Random();
