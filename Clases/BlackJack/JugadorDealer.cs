@@ -14,3 +14,24 @@ namespace BlackJack_Uno_BackUp.Clases.BlackJack
         public override int Puntos { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 
+        public JugadorDealer() : base("Dealer")
+        {
+            NombreJugador = "Dealer";
+            ManoJugador = new ManoBJ();
+        }
+
+        public bool TomarDecision()
+        {
+            int puntosActuales = CalcularPuntos();
+            return puntosActuales < 17;
+        }
+
+        public  void RecibirCarta(Carta carta)
+        {
+            if (ManoJugador is IMano mano)
+            {
+                mano.AgregarCarta(carta);
+                return;
+            }
+            throw new Exception("La mano del jugador no implementa IMano");
+        }
